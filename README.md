@@ -1,6 +1,7 @@
 # YBIGTA Project: DACON 천체유형 분류
 <br>
 ML 2팀: 노시영, 양정열, 안세현, 최정윤, 박솔희
+<br>
 
 ![](https://github.com/sehyeona/ybigta-project/blob/master/Title.jpg)
 
