@@ -404,7 +404,7 @@ make_submission(test_rb, cb_model_rb).to_csv('./result/rb_cb.csv', sep=',')
 
  4\) robustscaler : 0.4778
 
-산출된 결과를 통해 미세하지만 학습 결과값이 더 우수하고, 아웃라이어에 영향을 덜 받는 robustscaler를 최종 스케일링 방법으로 선택하였다.
+산출된 결과를 통해 미세하지만 학습 결과값이 더 우수하고, 아웃라이어에 영향을 덜 받는 robustscaler를 최종 스케일링 방법 선택하였다.
 
 <br>
 
@@ -465,6 +465,8 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 결과: log_loss = 0.38644079445636986
 
 높은 상관 관계를 보이는 변수들을 처리한 모델이 그렇지 않은 모델보다 더 높은 예측 성과를 보인다. 
+
+<br>
 
 > 3-3 outlier 조작
 
