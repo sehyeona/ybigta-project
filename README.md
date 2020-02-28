@@ -35,20 +35,27 @@ DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트
 <br>
 
 ## 1. 변수의 의미 파악
-> 1) column 살펴보기
+> 1-1. column 살펴보기
+<이미지 추가>
 - ID : 천체의 unique ID
+
 - type : 천체의 분류
+
 - psfMag(Point spread function magnitudes) : 먼 천체를 한 점으로 가정하여 측정한 빛의 밝기
-- fiberMag(Fiber magnitudes) : 3인치 지름의 광섬유를 사용하여 광스펙트럼을 측정합니다. 광섬유를 통과하는 빛의 밝기
-- petroMag(Petrosian Magnitudes) : 은하처럼 뚜렷한 표면이 없는 천체에서는 빛의 밝기를 측정하기 어렵다. 천체의 위치와 거리에 상관없이 빛의 밝기를 비교하기 위한 수치
+
+- fiberMag(Fiber magnitudes) : 3인치 지름의 광섬유를 사용하여 광스펙트럼을 측정한 광섬유를 통과하는 빛의 밝기
+
+- petroMag(Petrosian Magnitudes) : 천체의 위치와 거리에 상관없이 빛의 밝기를 비교하기 위한 수치
+
 - modelMag(Model magnitudes) : 천체 중심으로부터 특정 거리의 밝기
+
 - FiberID:관측에 사용된 광섬유의 구분자
 
 *참고: u(ultraviolet), g(green), r(red), i(near-infrared),z(very-near-infrared)
 
-> 2) 종속변수 분석 
+> 1-2. 종속변수 분석 
 
-type: 천체 유형으로 예측해야 하는 변수(종속변수)
+type: 천체 유형으로 예측해야 하는 변수로, 모델에서 종속변수가 된다.
 
 ```
   train=pd.read_csv('/content/gdrive/My Drive/train.csv')
@@ -68,7 +75,7 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 
 ## 2. Training Data 시각화
 
-> 1) type의 출현 빈도 파악
+> 2-1. type class 도수분표 
 
 ```
   plt.figure(figsize=(12,8))
@@ -92,7 +99,7 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 
 ![](https://github.com/sehyeona/ybigta-project/blob/master/visualization1.png)
 
-> 2) 변수(feature)들의 분포 
+> 2-2. feature의 분포 
 
 ```
 
@@ -156,7 +163,7 @@ for col in features :
 
 <br>
 
-> 3) 천체 type에 의한 변수 간 상관관계
+> 2-3. 천체 type에 의한 변수 간 상관관계
 
 ```
 for x in types:    
@@ -216,7 +223,7 @@ for x in types:
 
 ## 3. Training Data 전처리
 
-> 1. 스케일링
+> 3-1. 스케일링
 
 변수들간의 스케일이 대부분 차이를 보이지 않지만, 아웃라이어가 다소 존재하고 있고 모델의 예측 성능을 높이기 위해 아래의 4가지 방법을 이용하여 스케일링을 진행하였다. 
 
@@ -345,7 +352,7 @@ make_submission(test_rb, cb_model_rb).to_csv('./result/rb_cb.csv', sep=',')
 미세한 차이로 robustscaler로 처리했을 때 결과값이 나아지는 경향을 볼 수 있었다.
 
 
-> 상관관계 높은 변수 처리
+> 3-2. 상관관계가 높은 변수 처리
 
 -u계열 합치기
 
@@ -407,7 +414,7 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 
 # 4.training data 샘플링
 
-> sampling
+> 4-1. sampling
 
 -시각화 단계에서 타입의 데이터 클래스 개수에 큰 차이가 있음을 확인하였다.
 
