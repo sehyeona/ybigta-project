@@ -488,7 +488,7 @@ QSO를 기준으로 feature 분포를 살펴봤을 때 fiberMag_g 변수의 최�
 <br>
 <br>
 
-# 4.training data 샘플링
+# 4. training data 샘플링
 
 > 4-1. sampling
 
