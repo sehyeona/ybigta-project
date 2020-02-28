@@ -39,9 +39,6 @@ DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트
 ```
    df.info()
    
-```
-
-
 <class 'pandas.core.frame.DataFrame'>
 RangeIndex: 199991 entries, 0 to 199990
 Data columns (total 23 columns):
@@ -70,6 +67,8 @@ modelMag_i    199991 non-null float64
 modelMag_z    199991 non-null float64
 dtypes: float64(20), int64(2), object(1)
 memory usage: 35.1+ MB   
+
+```
 
 - ID : 천체의 unique ID
 
@@ -109,7 +108,7 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 
 ## 2. Training Data 시각화
 
-> 2-1. type 천체 class별 
+> 2-1. type 천체 class별 분포 
 
 ```
   plt.figure(figsize=(12,8))
@@ -249,15 +248,21 @@ for x in types:
 
 ![](https://github.com/sehyeona/ybigta-project/blob/master/%EC%83%81%EA%B4%80%EA%B4%80%EA%B3%8419.png)
 
-위에서 천체 타입별 feature 간 상관관계를 확인해보면 가로 세로 직선으로 진한 부분들을 관찰 할 수 있는데 이는 하나의 특징이 다른 모든 특징들과 매우 강한 상관관계를 가지고 있다는 것을 의미한다. 특징이 일대일로 강한 상관관계를 가지고 있는것은 가능한 일이지만 하나의 특징이 다른 모든 특징들과 매우 강한 상관관계를 가지는 것은 거의 불가능한 상황이다. 이에 대한 원인으로 두가지를 생각하였다
+위 그래프에서 천체 타입별 feature 간 상관 관계를 분석 해보면 가로 세로 직선으로 진한 색상을 가진 부분들을 관찰 할 수 있다. 이는 하나의 특징이 다른 모든 특징들과 매우 강한 상관 관계를 가지고 있다는 것을 의미한다. 어떠한 특징이 일대일로 강한 상관 관계를 가지고 있는것은 가능한 일이나, 하나의 특징이 다른 모든 특징들과 매우 강한 상관 관계를 가지는 것은 극히 드물다. 이에 대한 원인으로 크게 두 가지가 가능하다.
 
-1.특징이 매우 큰 outliers 값을 가지기 때문에 다른 특징들과의 수리적 계산에서 강한 상관관계를 초래한다.
+1\)특징이 매우 큰 outliers 값을 가지기 때문에 다른 특징들과의 수리적 계산에서 강한 상관관계를 초래한다.
 
-2.타입 샘플의 개수가 적어서
+2\) 타입 샘플의 개수가 적기 때문이다.
+
+> 2-4. 모든 변수 간 상관 관계
+![](https://github.com/sehyeona/ybigta-project/blob/master/heatmap.png)
+
+psfMag_u, fiberMag_u, petroMag_u 세 변수 간 상관 관계가 매우 높다.
+<br>
 
 ## 3. Training Data 전처리
 
-> 3-1. 스케일링
+> 3-1. scaling
 
 변수들간의 스케일이 대부분 차이를 보이지 않지만, 아웃라이어가 다소 존재하고 있고 모델의 예측 성능을 높이기 위해 아래의 4가지 방법을 이용하여 스케일링을 진행하였다. 
 
@@ -388,9 +393,8 @@ make_submission(test_rb, cb_model_rb).to_csv('./result/rb_cb.csv', sep=',')
 
 > 3-2. 상관관계가 높은 변수 처리
 
--u계열 합치기
+상관 관계 heatmap 분석을 통해 psfMag_u, fiberMag_u, petroMag_u 세 변수의 연관성이 높음을 알 수 있었다. 높은 상관계수를 갖는 변수들의 존재는 모델의 예측 성능을 하락시킬 수 있으므로 이 변수들을 합쳐서 전처리를 진행하였다. 
 
-u계열 변수가 서로 연관성이 높게 나왔기 때문에 합쳐서 전처리 해보기로 했다
 
 ```
 #train,test data 쪼개기(전처리 없이)
@@ -442,9 +446,9 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 
 ```
 
-결과: 0.38644079445636986
+결과: log_loss = 0.38644079445636986
 
-결론적으로 u계열의 변수를 통합하여 처리하는게 모델 성능을 약간이라도 높일 수 있다는 결론이 나왔다.
+u계열의 변수를 통합하여 처리하는 것이 모델 성능을 다소 높이는 
 
 # 4.training data 샘플링
 
