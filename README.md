@@ -86,7 +86,7 @@ memory usage: 35.1+ MB
 
 - FiberID:관측에 사용된 광섬유의 구분자
 
-*참고: u(ultraviolet), g(green), r(red), i(near-infrared),z(very-near-infrared)
+*참고: u(ultraviolet), g(green), r(red), i(near-infrared),z(very-near-infrared)*
 
 <br>
 
