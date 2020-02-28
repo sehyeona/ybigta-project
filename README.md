@@ -6,7 +6,6 @@ ML 2팀: 노시영, 양정열, 안세현, 최정윤, 박솔희
 
 
 ## 프로젝트의 목적 및 의의
->
 > 프로젝트의 목적
 
 DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트 데이터의 **천체 type 예측 확률을 높이는 모델을 구축**하는 것이 프로젝트의 목표이다. 채점기준은 log loss로, 모델에서 얻은 예측 데이터를 .csv형태로 저장한 후 DACON에 제출하면 자동으로 log loss값이 계산되어 출력된다. 이 수치를 최소화하는 것을 통해 모델 예측 성과를 측정한다. 
@@ -86,6 +85,7 @@ memory usage: 35.1+ MB
 - FiberID:관측에 사용된 광섬유의 구분자
 
 *참고: u(ultraviolet), g(green), r(red), i(near-infrared),z(very-near-infrared)
+<br>
 
 > 1-2. 종속변수 분석 
 
@@ -105,6 +105,7 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 ```
 총 19종류의 천체 유형으로 분류된다
 
+<br>
 <br>
 
 ## 2. Training Data 시각화
@@ -132,6 +133,7 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 ```
 
 ![](https://github.com/sehyeona/ybigta-project/blob/master/visualization1.png)
+<br>
 
 > 2-2. feature의 분포 
 
@@ -199,7 +201,7 @@ for col in features :
  
 <br>
 
-> 2-3. 천체 type에 의한 변수 간 상관관계
+> 2-3. 천체 type에 따른 변수 간 상관관계
 
 ```
 for x in types:    
@@ -255,10 +257,13 @@ for x in types:
 
 2\) 타입 샘플의 개수가 적기 때문이다.
 
+<br>
+
 > 2-4. 모든 변수 간 상관 관계
 ![](https://github.com/sehyeona/ybigta-project/blob/master/heatmap.png)
 
 psfMag_u, fiberMag_u, petroMag_u 세 변수 간 상관 관계가 매우 높다.
+<br>
 <br>
 
 ## 3. Training Data 전처리
@@ -389,7 +394,7 @@ make_submission(test_rb, cb_model_rb).to_csv('./result/rb_cb.csv', sep=',')
 
 4) robustscaler : 0.4778
 
-미세한 차이로 robustscaler로 처리했을 때 결과값이 나아지는 경향을 볼 수 있었다.
+미세한 차이지만 robustscaler로 처리했을 때 학습 결과값이 나아지는 경향을 볼 수 있었다.
 
 
 > 3-2. 상관관계가 높은 변수 처리
