@@ -7,9 +7,11 @@ ML 2팀: 노시영, 양정열, 안세현, 최정윤, 박솔희
 
 ## 프로젝트의 목적 및 의의
 > 프로젝트의 목적
-DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트 데이터의 *천체 type 예측 확률을 높이는 모델을 구축*하는 것이 프로젝트의 목표이다. 채점기준은 log loss로, 모델에서 얻은 예측 데이터를 .csv형태로 저장한 후 DACON에 제출하면 자동으로 log loss값이 계산되어 출력된다. 이 수치를 최소화함으로써 모델 예측 성과를 측정한다. 
+
+DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트 데이터의 **천체 type 예측 확률을 높이는 모델을 구축**하는 것이 프로젝트의 목표이다. 채점기준은 log loss로, 모델에서 얻은 예측 데이터를 .csv형태로 저장한 후 DACON에 제출하면 자동으로 log loss값이 계산되어 출력된다. 이 수치를 최소화함으로써 모델 예측 성과를 측정한다. 
 
 > 프로젝트의 의의
+
 본 프로젝트는 천문학 데이터를 기반으로 하고 있다. 천문학에 익숙하지 않아도 관련 데이터를 시각화하고 중요 변수를 파악하며, 적절한 모델 선택 및 학습시키는 과정을 통해 머신러닝에 대한 이해를 높일 수 있다.
 
 <br>
@@ -33,9 +35,12 @@ DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트
 <br>
 
 ## 1. 변수의 의미 파악
-> column 살펴보기
+> 1) column 살펴보기
 
-> type: 천체 유형으로 예측해야 하는 변수(종속변수) 
+> 2) 종속변수 분석 
+
+type: 천체 유형으로 예측해야 하는 변수(종속변수)
+
 ```
   train=pd.read_csv('/content/gdrive/My Drive/train.csv')
   test=pd.read_csv('/content/gdrive/My Drive/test.csv')
@@ -50,21 +55,22 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 ```
 총 19종류의 천체 유형으로 분류된다
 
--psfMag(Point spread function magnitudes) : 먼 천체를 한 점으로 가정하여 측정한 빛의 밝기
+- psfMag(Point spread function magnitudes) : 먼 천체를 한 점으로 가정하여 측정한 빛의 밝기
 
--fiberMag(Fiber magnitudes) : 3인치 지름의 광섬유를 사용하여 광스펙트럼을 측정합니다. 광섬유를 통과하는 빛의 밝기
+- fiberMag(Fiber magnitudes) : 3인치 지름의 광섬유를 사용하여 광스펙트럼을 측정합니다. 광섬유를 통과하는 빛의 밝기
 
--petroMag(Petrosian Magnitudes) : 은하처럼 뚜렷한 표면이 없는 천체에서는 빛의 밝기를 측정하기 어렵다. 천체의 위치와 거리에 상관없이 빛의 밝기를 비교하기 위한 수치
+- petroMag(Petrosian Magnitudes) : 은하처럼 뚜렷한 표면이 없는 천체에서는 빛의 밝기를 측정하기 어렵다. 천체의 위치와 거리에 상관없이 빛의 밝기를 비교하기 위한 수치
 
--modelMag(Model magnitudes) : 천체 중심으로부터 특정 거리의 밝기
+- modelMag(Model magnitudes) : 천체 중심으로부터 특정 거리의 밝기
 
--FiberID:관측에 사용된 광섬유의 구분자
+- FiberID:관측에 사용된 광섬유의 구분자
 
--참고: u(ultraviolet), g(green), r(red), i(near-infrared),z(very-near-infrared)
+*참고: u(ultraviolet), g(green), r(red), i(near-infrared),z(very-near-infrared)
+<br>
 
 ## 2. Training Data 시각화
 
-> type의 출현 빈도 파악
+> 1) type의 출현 빈도 파악
 
 ```
   plt.figure(figsize=(12,8))
@@ -88,7 +94,7 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 
 ![](https://github.com/sehyeona/ybigta-project/blob/master/visualization1.png)
 
-> 변수(feature)들의 분포
+> 2) 변수(feature)들의 분포 
 
 ```
 
@@ -144,15 +150,15 @@ for col in features :
 
 분포 확인 결과
 
-1. fiberMag_u 와 psfMag_u 가 두개의 분포형태가 거의 동일하다고 볼 수 있음
+ - fiberMag_u 와 psfMag_u 가 두개의 분포형태가 거의 동일하다고 볼 수 있다.
 
-2. 대부분의 분포들이 평균에서 매우 떨어져있는 아웃라이어를 가지고 있음을 알 수 있음
+ - 대부분의 분포들이 평균에서 매우 떨어져있는 아웃라이어를 가지고 있다.
 
-3. 주로 모든 아웃라이어들은 양방향으로 분포해있기 보다 한방향으로 치우쳐서 분포해 있음을 알 수 있음
+ - 주로 모든 아웃라이어들은 양방향으로 분포해있기 보다 한 방향으로 치우쳐서 분포해 있음을 알 수 있다.
 
 <br>
 
-> 천체타입에 의한 변수간의 상관관계
+> 3) 천체 type에 의한 변수 간 상관관계
 
 ```
 for x in types:    
@@ -214,19 +220,19 @@ for x in types:
 
 > 1. 스케일링
 
-변수들간의 스케일이 대부분 맞기는 하지만 어느정도 아웃라이어가 존재하기도 하고 해보기 전까지 모르기 때문에 아래의 4가지 방법을 이용하여 스케일링 하였다
+변수들간의 스케일이 대부분 차이를 보이지 않지만, 아웃라이어가 다소 존재하고 있고 모델의 예측 성능을 높이기 위해 아래의 4가지 방법을 이용하여 스케일링을 진행하였다. 
 
 -종류
 
-- standardscaler : 정규분포 이용
+- standardscaler : 정규분포를 이용한다.
 
-- minmaxscaler : 최대/최소값이 각각 0, 1
+- minmaxscaler : 최대/최소값이 각각 0, 1이다.
 
-- maxabsscaler : 최대절대값과 0이 각각 1, 0 이 되도록하는 scaling
+- maxabsscaler : 최대절대값과 0이 각각 1, 0 이 되도록하는 scaling이다.
 
-- robustscaler : median과 IQR 사용 outlier의 영향을 최소화 한다
+- robustscaler : median과 IQR 사용 outlier의 영향을 최소화 한다.
 
-모든 스케일러는 sklearn.preprocessing 안에 각자 이름으로 들어있음
+*모든 스케일러는 sklearn.preprocessing 패키지 안에 각자 이름으로 존재
 
 ```
 #training data를 각자 스케일링 
