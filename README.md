@@ -644,6 +644,10 @@ no sampling -> 0.374
 *모델 성능 비교 코드*
 *xgboost랑 lgbm?*
 
+<br>
+<br>
+<br>
+
 ## 6. 그리드 서치
 
 *xgboost랑 lgbm*
