@@ -4,6 +4,7 @@ ML 2팀: 노시영, 양정열, 안세현, 최정윤, 박솔희
 
 ![](https://github.com/sehyeona/ybigta-project/blob/master/Title.jpg)
 
+<br>
 
 ## 프로젝트의 목적 및 의의
 > 프로젝트의 목적
@@ -15,8 +16,9 @@ DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트
 본 프로젝트는 천문학 데이터를 기반으로 하고 있다. 천문학에 익숙하지 않아도 관련 데이터를 시각화하고 중요 변수를 파악하며, 적절한 모델 선택 및 학습시키는 과정을 통해 머신러닝에 대한 이해를 높일 수 있다.
 
 <br>
+<br>
 
-## 목차(진행과정)
+## 목차
 >
 1. 변수의 의미 파악
 
@@ -106,6 +108,7 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 ```
 총 19종류의 천체 유형으로 분류된다
 
+<br>
 <br>
 <br>
 
@@ -268,6 +271,7 @@ psfMag_u, fiberMag_u, petroMag_u 세 변수 간 상관 관계가 매우 높다.
 
 <br>
 <br>
+<br>
 
 ## 3. Training Data 전처리
 
@@ -399,6 +403,7 @@ make_submission(test_rb, cb_model_rb).to_csv('./result/rb_cb.csv', sep=',')
 
 미세한 차이지만 robustscaler로 처리했을 때 학습 결과값이 나아지는 경향을 볼 수 있었다.
 
+<br>
 
 > 3-2. 상관관계가 높은 변수 처리
 
@@ -458,6 +463,10 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 결과: log_loss = 0.38644079445636986
 
 u계열의 변수를 통합하여 처리하는 것이 모델 성능을  
+
+<br>
+<br>
+<br>
 
 # 4.training data 샘플링
 
