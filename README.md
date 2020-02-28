@@ -287,7 +287,7 @@ feature 변수 값들의 범위가 차이를 보이고 있기 때문에 머신�
 
 - robustscaler : median과 IQR 사용 outlier의 영향을 최소화 한다.
 
-*모든 스케일러는 sklearn.preprocessing 패키지 안에 각자 이름으로 존재
+  *모든 스케일러는 sklearn.preprocessing 패키지 안에 각자 이름으로 존재*
 
 ```
 #training data를 각자 스케일링 
@@ -337,9 +337,11 @@ ma_data, ma_scaler = scaling_func(data, MaxAbsScaler)
 
 from sklearn.preprocessing import RobustScaler
 rb_data, rb_scaler= scaling_func(data, RobustScaler)
+```
 
 가장 적합한 스케일링 방법 선정을 위해 스케일링을 거친 데이터들을 catboost 알고리즘을 통해 학습 시킨 후 log loss를 통해 예측 성과를 평가하였다.
 
+```
 #모델을 설정
 import catboost as cb
 cb_model_std = cb.CatBoostClassifier()
@@ -364,20 +366,20 @@ cb_model_rb.fit(X_rb, y)
 ```
 
 ```
-    #df형식으로 만들기(submission file과 같은 column순서로)
-    id_for_index = df['id']
-    test = df[test_data.columns[1:]]
-    predictions = model.predict_proba(test)
-    result = pd.DataFrame(data=predictions, index=id_for_index, columns=model.classes_)
-    sample = pd.read_csv("./data/ybigta_sdss_sample_submission.csv")
-    col_order = sample.columns[1:]
-    result = result[col_order]
-    return result
-    
-    test_std = test_scaling_func(test_data, std_scaler)
-    test_mm = test_scaling_func(test_data, mm_scaler)
-    test_ma = test_scaling_func(test_data, ma_scaler)
-    test_rb = test_scaling_func(test_data, rb_scaler)
+#df형식으로 만들기(submission file과 같은 column순서로)
+id_for_index = df['id']
+test = df[test_data.columns[1:]]
+predictions = model.predict_proba(test)
+result = pd.DataFrame(data=predictions, index=id_for_index, columns=model.classes_)
+sample = pd.read_csv("./data/ybigta_sdss_sample_submission.csv")
+col_order = sample.columns[1:]
+result = result[col_order]
+return result
+
+test_std = test_scaling_func(test_data, std_scaler)
+test_mm = test_scaling_func(test_data, mm_scaler)
+test_ma = test_scaling_func(test_data, ma_scaler)
+test_rb = test_scaling_func(test_data, rb_scaler)
     
 ```
 
@@ -393,13 +395,13 @@ make_submission(test_rb, cb_model_rb).to_csv('./result/rb_cb.csv', sep=',')
 
 결과:
 
-1\) standardscaler : 0.4778
+ 1\) standardscaler : 0.4778
 
-2\) minmaxscaler : 1.7
+ 2\) minmaxscaler : 1.7
 
-3\) maxabsscaler : 1.6
+ 3\) maxabsscaler : 1.6
 
-4\) robustscaler : 0.4778
+ 4\) robustscaler : 0.4778
 
 산출된 결과를 통해 미세하지만 학습 결과값이 더 우수하고, 아웃라이어에 영향을 덜 받는 robustscaler를 최종 스케일링 방법으로 선택하였다.
 
@@ -464,9 +466,17 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 높은 상관 관계를 보이는 변수들을 처리한 모델이 그렇지 않은 모델보다 더 높은 예측 성과를 보인다. 
 
 > 3-3 outlier 조작
+
 3-3-1. type 별 아웃라이어 제거
+QSO를 기준으로 feature 분포를 살펴봤을 때 fiberMag_g 변수의 최소값과 최대값이 다른 변수들에 비해 이상치를 보이는 것을 확인할 수 있다. 앞서 시각화에서 QSO와 fiberMag_g의 상관 관계가 유의미하지 않은 것으로 나왔기 때문에 이 이상치를 제거하였다.
+*표*
+
+
+<br>
 
 3-3-2. isolation forest 학습 알고리즘을 통한 아웃라이어 제거
+각각의 type 별 아웃라이어를 제거한 후 전체 데이터 측면에서 제거하지 못한 아웃라이어 제거를 위해 isolatio forest를 사용하였다. isolation forest는  regression tree 기반으로 모든 데이터 관측치를 고립시켜 아웃라이어를 정의하는 방법이다.
+*isoaltion code*
 
 
 <br>
@@ -476,9 +486,10 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 # 4.training data 샘플링
 
 > 4-1. sampling
+
 시각화 단계에서 타입의 type 클래스 개수에 큰 차이가 있음을 확인하였다.  클래스 개수가 너무 작은 type은 제대로 학습 되지 않아 예측 확률이 낮아지는 문제가 발생할 수 있다. 또한 fiberID 는 사실상 카테고리 변수이지만, 시각화 단계에서 다른 변수들과 낮은 상관관계를 보였다. 즉, 범주형 변수임에도 불구하고 자유로운 sampling이 가능하다.
 
->> oversampling을 통해 개수가 너무 적은 타입들의 개수를 늘려, 타입의 개수가 작은 변수에 대한 예측 정확도를 높일 수 있다고 판단하였다.
+oversampling을 통해 개수가 너무 적은 타입들의 개수를 늘려, 타입의 개수가 작은 변수에 대한 예측 정확도를 높일 수 있다고 판단하였다.
 
 ```
 import pandas as pd
@@ -619,10 +630,18 @@ no sampling -> 0.374
   샘플링 과정에서 데이터 개수가 1000개 이하인 type을 일정 비율 늘려준 모델의 성능이 가장 높은 것으로 나타났다.
 
 
+<br>
+<br>
+<br>
 
 
+## 5. 적합한 모델 찾기(XGBoost, CatBoost, RandomForest, LightGBM)
+*모델 성능 비교 코드*
+*xgboost랑 lgbm?*
 
+## 6. 그리드 서치
 
+*xgboost랑 lgbm*
 
 
 
