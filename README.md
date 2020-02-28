@@ -202,7 +202,7 @@ for col in features :
 
  - 아웃라이어들은 주로 양방향으로 분포해있기 보다 한 방향으로 치우쳐서 분포하는 경향을 보인다.
  
- - 변수들의 분포가 정규분포를 따르지 않는다.
+ - 변수들의 분포 범위가 차이를 보인다.
  
 <br>
 
@@ -277,9 +277,7 @@ psfMag_u, fiberMag_u, petroMag_u 세 변수 간 상관 관계가 매우 높다.
 
 > 3-1. scaling
 
-변수들 간의 스케일이   아웃라이어가 다소 존재하고 있고 모델의 예측 성능을 높이기 위해 아래의 4가지 방법을 이용하여 스케일링을 진행하였다. 
-
-\- 종류
+feature 변수 값들의 범위가 차이를 보이고 있기 때문에 머신러닝 알고리즘 모델링에 적합한 형태로 변화시키기 위해서 아래의 4가지 방법을 이용하여 스케일링을 진행하였다. 
 
 - standardscaler : 정규분포를 이용한다.
 
@@ -340,6 +338,8 @@ ma_data, ma_scaler = scaling_func(data, MaxAbsScaler)
 from sklearn.preprocessing import RobustScaler
 rb_data, rb_scaler= scaling_func(data, RobustScaler)
 
+가장 적합한 스케일링 방법 선정을 위해 스케일링을 거친 데이터들을 catboost 알고리즘을 통해 학습 시킨 후 log loss를 통해 예측 성과를 평가하였다.
+
 #모델을 설정
 import catboost as cb
 cb_model_std = cb.CatBoostClassifier()
@@ -393,22 +393,21 @@ make_submission(test_rb, cb_model_rb).to_csv('./result/rb_cb.csv', sep=',')
 
 결과:
 
-1) standardscaler : 0.4778
+1\) standardscaler : 0.4778
 
-2) minmaxscaler : 1.7
+2\) minmaxscaler : 1.7
 
-3) maxabsscaler : 1.6
+3\) maxabsscaler : 1.6
 
-4) robustscaler : 0.4778
+4\) robustscaler : 0.4778
 
-미세한 차이지만 robustscaler로 처리했을 때 학습 결과값이 나아지는 경향을 볼 수 있었다.
+산출된 결과를 통해 미세하지만 학습 결과값이 더 우수하고, 아웃라이어에 영향을 덜 받는 robustscaler를 최종 스케일링 방법으로 선택하였다.
 
 <br>
 
 > 3-2. 상관관계가 높은 변수 처리
 
-상관 관계 heatmap 분석을 통해 psfMag_u, fiberMag_u, petroMag_u 세 변수의 연관성이 높음을 알 수 있었다. 높은 상관계수를 갖는 변수들의 존재는 모델의 예측 성능을 하락시킬 수 있으므로 이 변수들을 합쳐서 전처리를 진행하였다. 
-
+상관 관계 heatmap 분석을 통해 psfMag_u, fiberMag_u, petroMag_u 세 변수의 연관성이 높음을 알 수 있었다. 높은 상관계수를 갖는 변수들의 존재는 모델의 예측 성능을 하락시킬 수 있으므로 이 변수들을 합쳐서 전처리를 진행한 후, 모델 성능이 향상되었는지 측정하였다.
 
 ```
 #train,test data 쪼개기(전처리 없이)
@@ -462,7 +461,13 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 
 결과: log_loss = 0.38644079445636986
 
-u계열의 변수를 통합하여 처리하는 것이 모델 성능을  
+높은 상관 관계를 보이는 변수들을 처리한 모델이 그렇지 않은 모델보다 더 높은 예측 성과를 보인다. 
+
+> 3-3 outlier 조작
+3-3-1. type 별 아웃라이어 제거
+
+3-3-2. isolation forest 학습 알고리즘을 통한 아웃라이어 제거
+
 
 <br>
 <br>
@@ -471,14 +476,9 @@ u계열의 변수를 통합하여 처리하는 것이 모델 성능을
 # 4.training data 샘플링
 
 > 4-1. sampling
+시각화 단계에서 타입의 type 클래스 개수에 큰 차이가 있음을 확인하였다.  클래스 개수가 너무 작은 type은 제대로 학습 되지 않아 예측 확률이 낮아지는 문제가 발생할 수 있다. 또한 fiberID 는 사실상 카테고리 변수이지만, 시각화 단계에서 다른 변수들과 낮은 상관관계를 보였다. 즉, 범주형 변수임에도 불구하고 자유로운 sampling이 가능하다.
 
--시각화 단계에서 타입의 데이터 클래스 개수에 큰 차이가 있음을 확인하였다.
-
--개수가 너무 작은 타입은 제대로 학습되지 않아 예측확률이 낮아지는 문제가 발생할 수 있다.
-
--fiberID 는 사실상 카테고리 변수이지만, 시각화 단계에서 다른 변수들과 상관관계가 매우 낮음을 확인하였다.
-
--> oversampling을 통해 개수가 너무 적은 타입들의 개수를 늘려, 타입의 개수가 작은 변수에 대한 예측 정확도를 높일 수 있다고 판단
+>> oversampling을 통해 개수가 너무 적은 타입들의 개수를 늘려, 타입의 개수가 작은 변수에 대한 예측 정확도를 높일 수 있다고 판단하였다.
 
 ```
 import pandas as pd
@@ -616,7 +616,7 @@ no sampling -> 0.374
 15	STAR_PN	120
 
 ```
-이렇게 샘플링 했을때 성능이 가장 좋았다
+  샘플링 과정에서 데이터 개수가 1000개 이하인 type을 일정 비율 늘려준 모델의 성능이 가장 높은 것으로 나타났다.
 
 
 
