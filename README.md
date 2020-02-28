@@ -8,7 +8,7 @@ ML 2팀: 노시영, 양정열, 안세현, 최정윤, 박솔희
 ## 프로젝트의 목적 및 의의
 > 프로젝트의 목적
 
-DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트 데이터의 **천체 type 예측 확률을 높이는 모델을 구축**하는 것이 프로젝트의 목표이다. 채점기준은 log loss로, 모델에서 얻은 예측 데이터를 .csv형태로 저장한 후 DACON에 제출하면 자동으로 log loss값이 계산되어 출력된다. 이 수치를 최소화함으로써 모델 예측 성과를 측정한다. 
+DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트 데이터의 **천체 type 예측 확률을 높이는 모델을 구축**하는 것이 프로젝트의 목표이다. 채점기준은 log loss로, 모델에서 얻은 예측 데이터를 .csv형태로 저장한 후 DACON에 제출하면 자동으로 log loss값이 계산되어 출력된다. 이 수치를 최소화하는 것을 통해 모델 예측 성과를 측정한다. 
 
 > 프로젝트의 의의
 
@@ -36,8 +36,41 @@ DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트
 
 ## 1. 변수의 의미 파악
 > 1-1. column 살펴보기
+```
+   df.info()
+   
+```
 
-<이미지 추가>
+
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 199991 entries, 0 to 199990
+Data columns (total 23 columns):
+id            199991 non-null int64
+type          199991 non-null object
+fiberID       199991 non-null int64
+psfMag_u      199991 non-null float64
+psfMag_g      199991 non-null float64
+psfMag_r      199991 non-null float64
+psfMag_i      199991 non-null float64
+psfMag_z      199991 non-null float64
+fiberMag_u    199991 non-null float64
+fiberMag_g    199991 non-null float64
+fiberMag_r    199991 non-null float64
+fiberMag_i    199991 non-null float64
+fiberMag_z    199991 non-null float64
+petroMag_u    199991 non-null float64
+petroMag_g    199991 non-null float64
+petroMag_r    199991 non-null float64
+petroMag_i    199991 non-null float64
+petroMag_z    199991 non-null float64
+modelMag_u    199991 non-null float64
+modelMag_g    199991 non-null float64
+modelMag_r    199991 non-null float64
+modelMag_i    199991 non-null float64
+modelMag_z    199991 non-null float64
+dtypes: float64(20), int64(2), object(1)
+memory usage: 35.1+ MB   
+
 - ID : 천체의 unique ID
 
 - type : 천체의 분류
