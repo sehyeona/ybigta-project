@@ -29,7 +29,7 @@ DACON에서 제공하는 천체 트레이닝 데이터를 활용하여 테스트
 5. 적합한 모델 찾기(XGBoost, CatBoost, RandomForest, LightGBM)
 
 6. 그리드 서치
->
+
 <br>
 <br>
 <br>
@@ -85,6 +85,7 @@ memory usage: 35.1+ MB
 - FiberID:관측에 사용된 광섬유의 구분자
 
 *참고: u(ultraviolet), g(green), r(red), i(near-infrared),z(very-near-infrared)
+
 <br>
 
 > 1-2. 종속변수 분석 
@@ -133,6 +134,7 @@ array(['QSO', 'STAR_RED_DWARF', 'SERENDIPITY_BLUE', 'STAR_BHB',
 ```
 
 ![](https://github.com/sehyeona/ybigta-project/blob/master/visualization1.png)
+
 <br>
 
 > 2-2. feature의 분포 
@@ -263,6 +265,7 @@ for x in types:
 ![](https://github.com/sehyeona/ybigta-project/blob/master/heatmap.png)
 
 psfMag_u, fiberMag_u, petroMag_u 세 변수 간 상관 관계가 매우 높다.
+
 <br>
 <br>
 
@@ -454,7 +457,7 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 
 결과: log_loss = 0.38644079445636986
 
-u계열의 변수를 통합하여 처리하는 것이 모델 성능을 다소 높이는 
+u계열의 변수를 통합하여 처리하는 것이 모델 성능을  
 
 # 4.training data 샘플링
 
