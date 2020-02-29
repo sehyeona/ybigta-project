@@ -511,7 +511,7 @@ len(temp_yes_spec)
 
 <br>
 
-3-3-2. isolation forest 학습 알고리즘을 통한 아웃라이어 제거
+> 3-3-2. isolation forest을 통한 아웃라이어 제거
 각각의 type 별 아웃라이어를 제거한 후 전체 데이터 측면에서 제거하지 못한 아웃라이어 제거를 위해 isolatio forest를 사용하였다. isolation forest는  regression tree 기반으로 모든 데이터 관측치를 고립시켜 아웃라이어를 정의하는 방법이다.
 
 ```
@@ -737,6 +737,7 @@ lgbm_model = LGBMClassifier(boosting_type='gbdt', objective='binary', num_leaves
                                 bagging_fraction=0.9, feature_fraction=0.9, reg_lambda=0.2)
 lgbm_model.fit(X,y)
 ```
+위와 같이 모델을 학습시키고 출력한 log_loss값을 비교한 결과 LGBM의 예측 성과가 가장 높았으며, 두 번째로는 XGBoost가 높은 것으로 나타났다. 결과에 따라 최종 머신러닝 모델은 LGBM과 XGBoos로 선정하였다. 
 
 <br>
 <br>
