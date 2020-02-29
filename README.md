@@ -745,6 +745,8 @@ lgbm_model.fit(X,y)
 <br>
 
 ## 6. 그리드 서치
+5번을 통해 선택한 모델들을 기반으로 그리드 서치를 진행한다. 그리드 서치란 관심 있는 parameter들을 대상으로 가능한 모든 조합을 시도하여 최적의 parameter 값을 찾는 방법으로, 이를 통해 프로젝트의 목표인 천체 type 예측 모델의 성능을 향상을 도모할 수 있다.
+
 > 6-1. XGBoost GridSearch
 
 <br>
@@ -785,8 +787,7 @@ LGBMClassifier(bagging_fraction=0.9, bagging_freq=1, boosting_type='rf',
                reg_alpha=0.0, reg_lambda=0.0, silent=True, subsample=1.0,
                subsample_for_bin=200000, subsample_freq=0)
 ```
-
-
-
+ 
+ 각각의 모델을 통해 산출된 최적 parameter 결과들을 모델과 접목시킨 결과, LGBM의 log loss가 가장 낮은 것으로 나타났다. 즉, LGBM이 가장 높은 예측 성과를 보이고 있으므로 최종 모델은 그리드 서치로 최적 parameter를 찾아낸 LGBM으로 결정하였다.
 
 
