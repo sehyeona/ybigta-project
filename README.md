@@ -706,7 +706,6 @@ xgb_model = xgb.XGBClassifier(n_estimators=2000,
                          tree_method='gpu_hist')
 ```
 
-<br>
 
 > 5-2. CatBoost
 
@@ -716,8 +715,6 @@ cb_model = cb.CatBoostClassifier()
 cb_model.fit(X_train_robustscaled,y_train_robustscaled)
 ```
 
-<br>
-
 > 5-3. RandomForest
 
 ```
@@ -726,7 +723,6 @@ from sklearn.ensemble import RandomForestClassifier
 rnd_clf = RandomForestClassifier(n_estimators=1000, criterion="entropy", random_state=True, max_leaf_nodes=38, n_jobs=-1)
 rnd_clf.fit(X, y)
 ```
-<br>
 
 > 5-4. LightGBM
 
