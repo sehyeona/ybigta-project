@@ -404,7 +404,7 @@ make_submission(test_rb, cb_model_rb).to_csv('./result/rb_cb.csv', sep=',')
 
  4\) robustscaler : 0.4778
 
-산출된 결과를 통해 미세하지만 학습 결과값이 더 우수하고, 아웃라이어에 영향을 덜 받는 robustscaler를 최종 스케일링 방법 선택하였다.
+산출된 결과를 통해 미세하지만 학습 결과값이 더 우수하고, 아웃라이어에 영향을 덜 받는 robustscaler를 최종 스케일링 방법을 선택하였다.
 
 <br>
 
@@ -474,14 +474,62 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 QSO를 기준으로 feature 분포를 살펴봤을 때 fiberMag_g 변수의 최소값과 최대값이 다른 변수들에 비해 이상치를 보이는 것을 확인할 수 있다. 앞서 시각화에서 QSO와 fiberMag_g의 상관 관계가 유의미하지 않은 것으로 나왔기 때문에 이 이상치를 제거하였다.
 
 *표*
+```
+qso = df[df['type']=='QSO'] #가장 갯수가 많은 QSO부터 시작
+qso.describe() #fiberMag만 이상한 것을 확인할 수 있다. 이친구의 outlier 먼저 제거해준다.
 
+q1,q3 = np.percentile(qso['fiberMag_g'],[25,75])
+iqr = q3-q1
+lower_bound = q1 - (iqr*1.5)
+upper_bound = q1 + (iqr*1.5)
+qso = qso[(qso['fiberMag_g']<upper_bound)&(qso['fiberMag_g']>lower_bound)]
+
+temp_no_qso = df[df['type']!='QSO']
+temp_yes_qso = pd.concat([temp_no_qso, qso])
+temp_yes_qso
+```
+
+마찬가지로 SPECTROPHOTO_STD-fiberMag_i의 아웃라이어도 조작하였다.
+
+```
+spec_std = temp_yes_qso[temp_yes_qso['type']=='SPECTROPHOTO_STD'] #그 다음은 SPECTROPHOTO_STD
+spec_std.describe() #fiberMag_i가 이상하다.
+len(spec_std)
+
+q1,q3 = np.percentile(spec_std['fiberMag_i'],[25,75])
+iqr = q3-q1
+lower_bound = q1 - (iqr*1.5)
+upper_bound = q1 + (iqr*1.5)
+spec_std = spec_std[(spec_std['fiberMag_i']<upper_bound)&(spec_std['fiberMag_i']>lower_bound)]
+spec_std.describe()
+len(spec_std)
+
+temp_no_spec = temp_yes_qso[temp_yes_qso['type']!='SPECTROPHOTO_STD']
+temp_yes_spec = pd.concat([temp_no_spec, spec_std])
+len(temp_yes_spec)
+```
 
 <br>
 
 3-3-2. isolation forest 학습 알고리즘을 통한 아웃라이어 제거
 각각의 type 별 아웃라이어를 제거한 후 전체 데이터 측면에서 제거하지 못한 아웃라이어 제거를 위해 isolatio forest를 사용하였다. isolation forest는  regression tree 기반으로 모든 데이터 관측치를 고립시켜 아웃라이어를 정의하는 방법이다.
 
-*isoaltion code*
+```
+from sklearn.ensemble import IsolationForest
+clf = IsolationForest(max_samples=7000, random_state=1)
+clf.fit(X)
+y_pred_outliers = clf.predict(X)
+out = pd.DataFrame(y_pred_outliers)
+out = out.rename(columns={0: "out"})
+df1 = pd.concat([X, out], 1)
+
+df2=train[["type","fiberID","type_num"]]
+df=pd.concat([df2,df1],axis=1)
+
+df=df[df.out !=-1]
+train=df.drop(columns=['out'])
+```
+
 
 
 <br>
