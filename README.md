@@ -470,7 +470,7 @@ log_loss(y_true=y_test, y_pred=y_pred_lgbm_prob)
 
 > 3-3 outlier 조작
 
-3-3-1. type 별 아웃라이어 제거
+3-3-1. type별 아웃라이어 제거
 
 QSO를 기준으로 feature 분포를 살펴봤을 때 fiberMag_g 변수의 최소값과 최대값이 다른 변수들에 비해 이상치를 보이는 것을 확인할 수 있다. 앞서 시각화에서 QSO와 fiberMag_g의 상관 관계가 유의미하지 않은 것으로 나왔기 때문에 이 이상치를 제거하였다.
 
@@ -514,7 +514,7 @@ len(temp_yes_spec)
 
 3-3-2. isolation forest을 통한 아웃라이어 제거
 
-각각의 type 별 아웃라이어를 제거한 후 전체 데이터 측면에서 제거하지 못한 아웃라이어 제거를 위해 isolatio forest를 사용하였다. isolation forest는  regression tree 기반으로 모든 데이터 관측치를 고립시켜 아웃라이어를 정의하는 방법이다.
+각각의 type별 아웃라이어를 제거한 후 전체 데이터 측면에서 제거하지 못한 아웃라이어 제거를 위해 isolatio forest를 사용하였다. isolation forest는  regression tree 기반으로 모든 데이터 관측치를 고립시켜 아웃라이어를 정의하는 방법이다.
 
 ```
 from sklearn.ensemble import IsolationForest
@@ -763,7 +763,8 @@ param_dist = {'boosting_type':['rf','gbdt'],
               'bagging_freq': [1],
               'bagging_fraction':[0.9]
              }
-grid_search = GridSearchCV(lgbm_model, n_jobs=6, param_grid=param_dist, cv=5, scoring="neg_log_loss", verbose=5)
+grid_search = GridSearchCV(lgbm_model, n_jobs=6, param_grid=param_dist, cv=5, 
+                           scoring="neg_log_loss", verbose=5)
 grid_search.fit(X,y)
 
 
