@@ -722,7 +722,8 @@ cb_model.fit(X_train_robustscaled,y_train_robustscaled)
 ```
 from sklearn.ensemble import RandomForestClassifier
 
-rnd_clf = RandomForestClassifier(n_estimators=1000, criterion="entropy", random_state=True, max_leaf_nodes=38, n_jobs=-1)
+rnd_clf = RandomForestClassifier(n_estimators=1000, criterion="entropy", random_state=True, 
+                                 max_leaf_nodes=38, n_jobs=-1)
 rnd_clf.fit(X, y)
 ```
 
