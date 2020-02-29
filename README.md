@@ -689,18 +689,99 @@ sampling_data = sampling(data, ["STAR_WHITE_DWARF", "SERENDIPITY_RED", "STAR_SUB
 
 
 ## 5. 적합한 모델 찾기(XGBoost, CatBoost, RandomForest, LightGBM)
-*모델 성능 비교 코드*
-*xgboost랑 lgbm?*
+XGBoost, CatBoost, RandomForest, LightGBM 4개의 머신러닝 알고리즘을 통해 training data를 학습시키고, 가장 적합한 모델을 선정한다.
+
+> 5-1. XGBoost
+
+```
+import xgboost as xgb
+xgb_model = xgb.XGBClassifier(n_estimators=2000,
+                         n_jobs=4,
+                         max_depth=15,
+                         learning_rate=0.05,
+                         gamma = 0.02,
+                         subsample = 0.9,
+                         colsample_bytree=0.9,
+                         missing=-999,
+                         tree_method='gpu_hist')
+```
+
+<br>
+
+> 5-2. CatBoost
+
+```
+import catboost as cb
+cb_model = cb.CatBoostClassifier()
+cb_model.fit(X_train_robustscaled,y_train_robustscaled)
+```
+
+<br>
+
+> 5-3. RandomForest
+
+```
+from sklearn.ensemble import RandomForestClassifier
+
+rnd_clf = RandomForestClassifier(n_estimators=1000, criterion="entropy", random_state=True, max_leaf_nodes=38, n_jobs=-1)
+rnd_clf.fit(X, y)
+```
+<br>
+
+> 5-4. LightGBM
+
+```
+from lightgbm import LGBMClassifier
+lgbm_model = LGBMClassifier(boosting_type='gbdt', objective='binary', num_leaves=128,
+                                learning_rate=0.005, n_estimators=2000, max_depth=30,
+                                bagging_fraction=0.9, feature_fraction=0.9, reg_lambda=0.2)
+lgbm_model.fit(X,y)
+```
 
 <br>
 <br>
 <br>
 
 ## 6. 그리드 서치
+> 6-1. XGBoost GridSearch
 
-*xgboost랑 lgbm*
+<br>
 
 
+> 6-2. LightGBM GridSearch
+
+```
+from sklearn.model_selection import GridSearchCV
+from lightgbm import LGBMClassifier
+
+lgbm_model = LGBMClassifier(objective='binary')
+
+param_dist = {'boosting_type':['rf','gbdt'],
+              'n_estimators': [1500,2000,2500],
+              'max_depth': [15,30,45],
+              'learning_rate': [0.01,0.05,0.1],
+              'bagging_freq': [1],
+              'bagging_fraction':[0.9]
+             }
+grid_search = GridSearchCV(lgbm_model, n_jobs=6, param_grid=param_dist, cv=5, scoring="neg_log_loss", verbose=5)
+grid_search.fit(X,y)
+
+
+grid_search.best_estimator_
+
+```
+
+최종 parameter 결과는 다음과 같다.
+
+```
+LGBMClassifier(bagging_fraction=0.9, bagging_freq=1, boosting_type='rf',
+               class_weight=None, colsample_bytree=1.0, importance_type='split',
+               learning_rate=0.01, max_depth=15, min_child_samples=20,
+               min_child_weight=0.001, min_split_gain=0.0, n_estimators=1500,
+               n_jobs=-1, num_leaves=31, objective='binary', random_state=None,
+               reg_alpha=0.0, reg_lambda=0.0, silent=True, subsample=1.0,
+               subsample_for_bin=200000, subsample_freq=0)
+```
 
 
 
