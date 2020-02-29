@@ -587,7 +587,8 @@ def sampling(df, orb_type): #df : 데이터프레임, orb_type : 천체타입 �
         print("현재 type : ", t)
         insert_row = int(input("랜덤샘플링으로 추가할 개수를 입력하세요 : "))
         print("\n")
-        temp = df[df["type"]==t].sample(n = (insert_row - num), replace=True)  #t는 tpye의 종류, replace = True 옵션을 줘야 개수가 더 많아도 샘플링 가능
+        temp = df[df["type"]==t].sample(n = (insert_row - num), replace=True)  
+	#t는 tpye의 종류, replace = True 옵션을 줘야 개수가 더 많아도 샘플링 가능
         copy_train = pd.concat([copy_train, temp], axis = 0) #row로 붙여넣기
     return copy_train
     
@@ -619,7 +620,8 @@ count.sort_values(by="count",ascending=False)
 ```
 
 ```
-sampling_data = sampling(data, ["STAR_WHITE_DWARF", "SERENDIPITY_RED", "STAR_SUB_DWARF", "STAR_BROWN_DWARF", "SKY", "SERENDIPITY_MANUAL", "STAR_PN"]
+sampling_data = sampling(data, ["STAR_WHITE_DWARF", "SERENDIPITY_RED", "STAR_SUB_DWARF",
+                         "STAR_BROWN_DWARF", "SKY", "SERENDIPITY_MANUAL", "STAR_PN"]
 
 현재 type :  STAR_WHITE_DWARF
 랜덤샘플링으로 추가할 개수를 입력하세요 : 2800
